@@ -5,8 +5,8 @@ import { Languages, Music, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import LyricsColumns from "../_components/LyricsColumns";
 import YouTube from "@/_components/YouTube";
+import LyricsColumns from "../_components/LyricsColumns";
 
 // Extend Window interface to include puter
 declare global {
@@ -166,6 +166,8 @@ ${JSON.stringify(lyrics, null, 2)}`;
             rawLyrics,
             data.title
           );
+          console.log("🚀");
+          console.log(structuredOriginal);
           setOriginalLyrics(structuredOriginal);
 
           // Step 3: Translate the structured lyrics
@@ -174,6 +176,8 @@ ${JSON.stringify(lyrics, null, 2)}`;
               structuredOriginal,
               data.targetLanguage
             );
+            console.log("🚀");
+            console.log(translatedStructured);
             setTranslatedLyrics(translatedStructured);
           }
         } catch (aiError) {
@@ -252,12 +256,7 @@ ${JSON.stringify(lyrics, null, 2)}`;
         <div className="col-span-3">
           {isLoading && <p>Loading...</p>}
 
-          {originalLyrics.length > 0 && !isLoading && (
-            <LyricsColumns
-              originalLyrics={originalLyrics}
-              translatedLyrics={translatedLyrics}
-            />
-          )}
+          <LyricsColumns />
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ function YouTube() {
         <button className="btn btn-active mt-3">Play</button>
       </form>
       <ReactPlayer
-        src={url || "https://youtu.be/JGwWNGJdvx8"}
+        src={url || "https://youtu.be/i-xkZUZbhYc"}
         className="mt-4"
       />
     </div>
