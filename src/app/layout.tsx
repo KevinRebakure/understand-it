@@ -1,3 +1,4 @@
+import Providers from "@/providers/providers";
 import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
@@ -19,7 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="cupcake">
-      <body className={`${roboto_Flex.className} antialiased`}>{children}</body>
+      <Providers>
+        <body className={`${roboto_Flex.className} antialiased`}>
+          {children}
+        </body>
+      </Providers>
     </html>
   );
 }
