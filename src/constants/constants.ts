@@ -1,3 +1,3 @@
-const lyricsAPI = process.env.NEXT_PUBLIC_LYRICS_OVH_URL;
+const lyricsAPI = "https://api.lyrics.ovh/v1/";
 
 export { lyricsAPI };
