@@ -14,7 +14,6 @@ const LyricsSchema = z.object({
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  // Step. Parse the body
   const parseBody = LyricsSchema.safeParse(body);
 
   if (!parseBody.success) {
@@ -23,16 +22,12 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // Step. Fetch original lyrics
   try {
-    // Fetch original lyrics from external API
     const lyricsResponse = await axios.get(
       `${lyricsAPI}/${parseBody.data.artist}/${parseBody.data.title}`
     );
 
     const formatted = await llmModal.formatLyrics(lyricsResponse.data.lyrics);
-
-    console.log("🚀 [TYPE]", typeof formatted);
 
     return new Response(formatted, {
       status: 200,
@@ -40,21 +35,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("Lyrics fetch error:", error.message);
 
-    if (error.response?.status === 502) {
-      return new Response(
-        JSON.stringify({ error: "Lyrics API returned a bad response (502)." }),
-        { status: 502 }
-      );
-    }
-
-    if (error.code === "ECONNABORTED") {
-      return new Response(
-        JSON.stringify({ error: "Lyrics API request timed out." }),
-        { status: 504 }
-      );
-    }
-
-    return new Response(JSON.stringify({ error: "Failed to fetch lyrics." }), {
+    return new Response(error.message, {
       status: 500,
     });
   }

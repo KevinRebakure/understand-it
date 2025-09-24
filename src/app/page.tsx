@@ -1,12 +1,12 @@
 "use client";
 
 import FormModal from "@/_components/FormModal";
+import LyricsLoading from "@/_components/LyricsLoading";
 import NoLyrics from "@/_components/NoLyrics";
 import SearchForm from "@/_components/SearchForm";
 import { useLyricsVisibility } from "@/hooks/useLyricsVisibility";
 import { useLyricsStore } from "@/stores/lyricsStore";
 import LyricsColumns from "../_components/LyricsColumns";
-import LyricsLoading from "@/_components/LyricsLoading";
 
 export default function Home() {
   const {
@@ -55,7 +55,7 @@ export default function Home() {
           </div>
         )}
 
-        <div className="col-span-4 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="col-span-4 md:col-span-3 gap-8 grid grid-cols-1 md:grid-cols-2 items-start">
           {!loadingOriginalLyrics && originalLyrics && (
             <LyricsColumns lyrics={originalLyrics} />
           )}
