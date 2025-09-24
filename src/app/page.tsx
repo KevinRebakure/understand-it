@@ -85,7 +85,7 @@ export default function Home() {
           )}
 
           {loadingOriginalLyrics && (
-            <LyricsLoading message="Fetching original lyrics" />
+            <LyricsLoading message="Processing original lyrics" />
           )}
 
           {loadingTranslatedLyrics && (
