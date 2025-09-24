@@ -1,8 +1,12 @@
 "use client";
 
+import { useLyricsStore } from "@/stores/lyricsStore";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Languages, Music, User } from "lucide-react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Lyrics } from "./LyricsColumns";
 
 type Inputs = {
   title: string;
@@ -11,6 +15,27 @@ type Inputs = {
 };
 
 export default function SearchForm() {
+  const {
+    setOriginalLyrics,
+    setTranslatedLyrics,
+    setLoadingOriginalLyrics,
+    setLoadingTranslatedLyrics,
+  } = useLyricsStore();
+
+  const lyricsMutation = useMutation({
+    mutationFn: async (data: Inputs) => {
+      const response = await axios.post<Lyrics>("/api/lyrics", data);
+      return response.data;
+    },
+  });
+
+  const translateMutation = useMutation({
+    mutationFn: async (data: Lyrics) => {
+      const response = await axios.post<Lyrics>("/api/translate", data);
+      return response.data;
+    },
+  });
+
   const { register, handleSubmit } = useForm<Inputs>({
     defaultValues: {
       targetLanguage: "English",
@@ -18,9 +43,35 @@ export default function SearchForm() {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const response = await axios.post("/api/lyrics", data);
-    console.log(response.data);
+    lyricsMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log("🚀");
+        console.log(data);
+        setOriginalLyrics(data);
+
+        translateMutation.mutate(data, {
+          onSuccess: (data) => {
+            console.log("✅");
+            console.log(data);
+            setTranslatedLyrics(data);
+          },
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   };
+
+  useEffect(() => {
+    setLoadingOriginalLyrics(lyricsMutation.isPending);
+    setLoadingTranslatedLyrics(translateMutation.isPending);
+  }, [
+    lyricsMutation.isPending,
+    setLoadingOriginalLyrics,
+    setLoadingTranslatedLyrics,
+    translateMutation.isPending,
+  ]);
 
   return (
     <div>
@@ -55,8 +106,25 @@ export default function SearchForm() {
             placeholder="Target language (e.g., English, Spanish)"
           />
         </label>
-        <button className="btn btn-active mt-3 rounded-full">
-          Search & Translate
+        <button
+          disabled={lyricsMutation.isPending || translateMutation.isPending}
+          className="btn btn-active mt-3 rounded-full"
+        >
+          {lyricsMutation.isPending && (
+            <>
+              <span className="loading loading-ring loading-sm"></span>
+              <span>Formatting original lyrics ...</span>
+            </>
+          )}
+          {translateMutation.isPending && (
+            <>
+              <span className="loading loading-ring loading-sm"></span>
+              <span>Translating lyrics ...</span>
+            </>
+          )}
+          {!lyricsMutation.isPending &&
+            !translateMutation.isPending &&
+            "Search & Translate"}
         </button>
       </form>
     </div>

@@ -1,16 +1,22 @@
 "use client";
 
-import lyricsA from "@/constants/lyricsA";
-import lyricsB from "@/constants/lyricsB";
-
 import FormModal from "@/_components/FormModal";
+import NoLyrics from "@/_components/NoLyrics";
 import SearchForm from "@/_components/SearchForm";
 import { useLyricsVisibility } from "@/hooks/useLyricsVisibility";
+import { useLyricsStore } from "@/stores/lyricsStore";
 import LyricsColumns from "../_components/LyricsColumns";
 
 export default function Home() {
-  const { isDesktop, original, translated, showOriginal, showTranslated } =
-    useLyricsVisibility();
+  const {
+    isDesktop,
+    originalVisible,
+    translatedVisible,
+    showOriginal,
+    showTranslated,
+  } = useLyricsVisibility();
+
+  const { originalLyrics, translatedLyrics } = useLyricsStore();
 
   return (
     <div className="p-8 md:p-16">
@@ -29,13 +35,13 @@ export default function Home() {
         {!isDesktop && (
           <div className="flex gap-4">
             <button
-              className={`btn rounded-full ${original && "bg-accent"}`}
+              className={`btn rounded-full ${originalVisible && "bg-accent"}`}
               onClick={showOriginal}
             >
               Original
             </button>
             <button
-              className={`btn rounded-full ${translated && "bg-accent"}`}
+              className={`btn rounded-full ${translatedVisible && "bg-accent"}`}
               onClick={showTranslated}
             >
               Translated
@@ -44,8 +50,13 @@ export default function Home() {
         )}
 
         <div className="col-span-4 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {original && <LyricsColumns lyrics={lyricsA} />}
-          {translated && <LyricsColumns lyrics={lyricsB} />}
+          {originalLyrics && originalVisible && (
+            <LyricsColumns lyrics={originalLyrics} />
+          )}
+          {translatedLyrics && translatedVisible && (
+            <LyricsColumns lyrics={translatedLyrics} />
+          )}
+          {!originalLyrics && !translatedLyrics && <NoLyrics />}
         </div>
       </div>
     </div>
