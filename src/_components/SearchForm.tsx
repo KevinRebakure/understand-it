@@ -3,7 +3,7 @@
 import { useLyricsStore } from "@/stores/lyricsStore";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { Languages, Music, User } from "lucide-react";
+import { CircleAlert, Languages, Music, User } from "lucide-react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
@@ -111,6 +111,13 @@ export default function SearchForm() {
               placeholder="Target language (e.g., English, Spanish)"
             />
           </label>
+          <div role="alert" className="alert alert-warning">
+            <CircleAlert />
+            <span>
+              Write the title of the song and the name of the artist exactly as
+              it is, or otherwise it will fail.
+            </span>
+          </div>
           <button
             disabled={lyricsMutation.isPending || translateMutation.isPending}
             className="btn btn-active mt-3 rounded-full"
