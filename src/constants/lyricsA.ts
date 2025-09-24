@@ -1,4 +1,4 @@
-import { Lyrics } from "./LyricsColumns";
+import { Lyrics } from "../_components/LyricsColumns";
 
 const lyricsA: Lyrics = [
   {
