@@ -1,9 +1,12 @@
 "use client";
 
+import { useLyricsStore } from "@/stores/lyricsStore";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Languages, Music, User } from "lucide-react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Lyrics } from "./LyricsColumns";
 
 type Inputs = {
   title: string;
@@ -12,18 +15,23 @@ type Inputs = {
 };
 
 export default function SearchForm() {
-  // const { setOriginalLyrics, setTranslatedLyrics } = useLyricsStore();
+  const {
+    setOriginalLyrics,
+    setTranslatedLyrics,
+    setLoadingOriginalLyrics,
+    setLoadingTranslatedLyrics,
+  } = useLyricsStore();
 
   const lyricsMutation = useMutation({
     mutationFn: async (data: Inputs) => {
-      const response = await axios.post("/api/lyrics", data);
+      const response = await axios.post<Lyrics>("/api/lyrics", data);
       return response.data;
     },
   });
 
   const translateMutation = useMutation({
-    mutationFn: async (data: Inputs) => {
-      const response = await axios.post("/api/translate", data);
+    mutationFn: async (data: Lyrics) => {
+      const response = await axios.post<Lyrics>("/api/translate", data);
       return response.data;
     },
   });
@@ -39,11 +47,13 @@ export default function SearchForm() {
       onSuccess: (data) => {
         console.log("🚀");
         console.log(data);
+        setOriginalLyrics(data);
 
         translateMutation.mutate(data, {
           onSuccess: (data) => {
             console.log("✅");
             console.log(data);
+            setTranslatedLyrics(data);
           },
         });
       },
@@ -52,6 +62,16 @@ export default function SearchForm() {
       },
     });
   };
+
+  useEffect(() => {
+    setLoadingOriginalLyrics(lyricsMutation.isPending);
+    setLoadingTranslatedLyrics(translateMutation.isPending);
+  }, [
+    lyricsMutation.isPending,
+    setLoadingOriginalLyrics,
+    setLoadingTranslatedLyrics,
+    translateMutation.isPending,
+  ]);
 
   return (
     <div>
@@ -102,7 +122,9 @@ export default function SearchForm() {
               <span>Translating lyrics ...</span>
             </>
           )}
-          Search & Translate
+          {!lyricsMutation.isPending &&
+            !translateMutation.isPending &&
+            "Search & Translate"}
         </button>
       </form>
     </div>

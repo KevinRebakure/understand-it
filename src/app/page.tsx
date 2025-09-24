@@ -8,8 +8,13 @@ import { useLyricsStore } from "@/stores/lyricsStore";
 import LyricsColumns from "../_components/LyricsColumns";
 
 export default function Home() {
-  const { isDesktop, original, translated, showOriginal, showTranslated } =
-    useLyricsVisibility();
+  const {
+    isDesktop,
+    originalVisible,
+    translatedVisible,
+    showOriginal,
+    showTranslated,
+  } = useLyricsVisibility();
 
   const { originalLyrics, translatedLyrics } = useLyricsStore();
 
@@ -30,13 +35,13 @@ export default function Home() {
         {!isDesktop && (
           <div className="flex gap-4">
             <button
-              className={`btn rounded-full ${original && "bg-accent"}`}
+              className={`btn rounded-full ${originalVisible && "bg-accent"}`}
               onClick={showOriginal}
             >
               Original
             </button>
             <button
-              className={`btn rounded-full ${translated && "bg-accent"}`}
+              className={`btn rounded-full ${translatedVisible && "bg-accent"}`}
               onClick={showTranslated}
             >
               Translated
@@ -45,14 +50,13 @@ export default function Home() {
         )}
 
         <div className="col-span-4 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {originalLyrics && translatedLyrics ? (
-            <>
-              {originalLyrics && <LyricsColumns lyrics={originalLyrics} />}
-              {translatedLyrics && <LyricsColumns lyrics={translatedLyrics} />}
-            </>
-          ) : (
-            <NoLyrics />
+          {originalLyrics && originalVisible && (
+            <LyricsColumns lyrics={originalLyrics} />
           )}
+          {translatedLyrics && translatedVisible && (
+            <LyricsColumns lyrics={translatedLyrics} />
+          )}
+          {!originalLyrics && !translatedLyrics && <NoLyrics />}
         </div>
       </div>
     </div>

@@ -4,8 +4,8 @@ import { useMediaQuery } from "./useMediaQuery";
 export function useLyricsVisibility() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [original, setOriginal] = useState(true);
-  const [translated, setTranslated] = useState(true);
+  const [originalVisible, setOriginal] = useState(true);
+  const [translatedVisible, setTranslated] = useState(true);
 
   useEffect(() => {
     if (isDesktop) {
@@ -29,8 +29,8 @@ export function useLyricsVisibility() {
 
   return {
     isDesktop,
-    original,
-    translated,
+    originalVisible,
+    translatedVisible,
     showOriginal,
     showTranslated,
   };
