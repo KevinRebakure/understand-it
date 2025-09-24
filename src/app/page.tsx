@@ -4,8 +4,11 @@ import FormModal from "@/_components/FormModal";
 import LyricsLoading from "@/_components/LyricsLoading";
 import NoLyrics from "@/_components/NoLyrics";
 import SearchForm from "@/_components/SearchForm";
+import { docs, rebakure } from "@/constants/constants";
 import { useLyricsVisibility } from "@/hooks/useLyricsVisibility";
 import { useLyricsStore } from "@/stores/lyricsStore";
+import { BookOpen, Globe } from "lucide-react";
+import Link from "next/link";
 import LyricsColumns from "../_components/LyricsColumns";
 
 export default function Home() {
@@ -27,7 +30,25 @@ export default function Home() {
   return (
     <div className="p-8 md:p-16">
       <div className="flex justify-between">
-        <h1 className="text-2xl md:text-5xl mb-12">understand it.</h1>
+        <div className="mb-12 flex flex-col gap-1">
+          <h1 className="text-2xl md:text-5xl">understand it.</h1>
+          <Link
+            href={rebakure}
+            target="_blank"
+            className="flex items-center gap-2 underline"
+          >
+            <Globe />
+            rebakure.com
+          </Link>
+          <Link
+            href={docs}
+            target="_blank"
+            className="flex items-center gap-2 underline"
+          >
+            <BookOpen />
+            Docs
+          </Link>
+        </div>
         {!isDesktop && <FormModal />}
       </div>
 
