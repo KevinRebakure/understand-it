@@ -22,8 +22,8 @@ export default function SearchForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-      <label className="input">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 flex flex-col">
+      <label className="input w-full">
         <Music size={24} />
         <input
           {...register("title", { required: true })}
@@ -32,7 +32,7 @@ export default function SearchForm() {
           placeholder="Song name"
         />
       </label>
-      <label className="input">
+      <label className="input w-full">
         <User size={24} />
         <input
           {...register("artist", { required: true })}
@@ -41,7 +41,7 @@ export default function SearchForm() {
           placeholder="Artist"
         />
       </label>
-      <label className="input">
+      <label className="input w-full">
         <Languages size={24} />
         <input
           {...register("targetLanguage", { required: true })}
@@ -50,7 +50,7 @@ export default function SearchForm() {
           placeholder="Target language (e.g., English, Spanish)"
         />
       </label>
-      <button className="btn btn-active mt-3">Search & Translate</button>
+      <button className="btn btn-active mt-3 rounded-full">Search & Translate</button>
     </form>
   );
 }
