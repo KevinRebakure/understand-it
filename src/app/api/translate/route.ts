@@ -27,7 +27,7 @@ export const LyricsRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const parseBody = LyricsSchema.safeParse(body);
+  const parseBody = LyricsRequestSchema.safeParse(body);
 
   if (!parseBody.success) {
     return new Response(JSON.stringify(parseBody.error.issues), {
@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const translated = await llmModal.translateLyrics(
-      parseBody.data,
-      body.targetLanguage
+      parseBody.data.lyrics,
+      parseBody.data.targetLanguage
     );
 
     return new Response(translated, { status: 200 });

@@ -77,13 +77,17 @@ export default function Home() {
         )}
 
         <div className="col-span-4 md:col-span-3 gap-8 grid grid-cols-1 md:grid-cols-2 items-start">
-          {!loadingOriginalLyrics && originalLyrics && (
+          {/* Original Lyrics - Show based on visibility state */}
+          {originalVisible && !loadingOriginalLyrics && originalLyrics && (
             <LyricsColumns lyrics={originalLyrics} />
           )}
-          {!loadingTranslatedLyrics && translatedLyrics && (
-            <LyricsColumns lyrics={translatedLyrics} />
-          )}
 
+          {/* Translated Lyrics - Show based on visibility state */}
+          {translatedVisible &&
+            !loadingTranslatedLyrics &&
+            translatedLyrics && <LyricsColumns lyrics={translatedLyrics} />}
+
+          {/* Loading States */}
           {loadingOriginalLyrics && (
             <LyricsLoading message="Processing original lyrics" />
           )}
@@ -92,6 +96,7 @@ export default function Home() {
             <LyricsLoading message="Translating..." />
           )}
 
+          {/* No Lyrics State */}
           {!originalLyrics &&
             !translatedLyrics &&
             !loadingOriginalLyrics &&

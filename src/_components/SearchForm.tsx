@@ -15,6 +15,12 @@ type Inputs = {
   targetLanguage: string;
 };
 
+// Update the translate mutation input type to include targetLanguage
+type TranslateInput = {
+  lyrics: Lyrics;
+  targetLanguage: string;
+};
+
 export default function SearchForm() {
   const {
     setOriginalLyrics,
@@ -31,34 +37,34 @@ export default function SearchForm() {
   });
 
   const translateMutation = useMutation({
-    mutationFn: async (data: Lyrics) => {
+    mutationFn: async (data: TranslateInput) => {
       const response = await axios.post<Lyrics>("/api/translate", data);
       return response.data;
     },
   });
 
-  const { register, handleSubmit } = useForm<Inputs>({
-    defaultValues: {
-      targetLanguage: "Swahili",
-      artist: "Coldplay",
-      title: "Adventure of a lifetime",
-    },
-  });
+  const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     lyricsMutation.mutate(data, {
-      onSuccess: (data) => {
-        setOriginalLyrics(data);
+      onSuccess: (lyricsData) => {
+        setOriginalLyrics(lyricsData);
 
-        translateMutation.mutate(data, {
-          onSuccess: (data) => {
-            setTranslatedLyrics(data);
+        translateMutation.mutate(
+          {
+            lyrics: lyricsData,
+            targetLanguage: data.targetLanguage,
           },
-          onError: (error) => {
-            console.error(error);
-            toast.error("Failed to translate lyrics!");
-          },
-        });
+          {
+            onSuccess: (translatedData) => {
+              setTranslatedLyrics(translatedData);
+            },
+            onError: (error) => {
+              console.error(error);
+              toast.error("Failed to translate lyrics!");
+            },
+          }
+        );
       },
       onError: (error) => {
         console.error(error);
