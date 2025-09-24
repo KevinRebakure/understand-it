@@ -39,9 +39,9 @@ export default function SearchForm() {
 
   const { register, handleSubmit } = useForm<Inputs>({
     defaultValues: {
-      targetLanguage: "",
-      artist: "",
-      title: "",
+      targetLanguage: "Swahili",
+      artist: "Coldplay",
+      title: "Adventure of a lifetime",
     },
   });
 
