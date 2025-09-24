@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="p-8 md:p-16">
       <div className="flex justify-between">
-        <h1 className="text-4xl md:text-5xl mb-12">understand it.</h1>
+        <h1 className="text-2xl md:text-5xl mb-12">understand it.</h1>
         {!isDesktop && <FormModal />}
       </div>
 

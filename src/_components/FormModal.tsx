@@ -22,7 +22,7 @@ export default function FormModal() {
       </button>
 
       <dialog id="form_modal" className="modal">
-        <div className="modal-box max-w-md w-full">
+        <div className="modal-box max-w-md">
           <h3 className="font-bold text-lg mb-4">Search & Translate</h3>
           <SearchForm />
           <div className="modal-action">

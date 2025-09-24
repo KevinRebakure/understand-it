@@ -20,22 +20,20 @@ type Props = {
 
 function LyricsColumn({ lyrics }: Props) {
   return (
-    <div className="space-y-8">
-      <div className="space-y-16">
-        {lyrics.map((lyric, i) => (
-          <div key={lyric.type + i}>
-            <p
-              className={cn(
-                "text-2xl leading-12",
-                lyric.type === "title" && "text-5xl font-bold",
-                lyric.type === "chorus" && "pl-10 italic"
-              )}
-            >
-              {lyric.content}
-            </p>
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-col gap-8 md:gap-16">
+      {lyrics.map((lyric, i) => (
+        <div key={lyric.type + i}>
+          <p
+            className={cn(
+              "text-2xl leading-12",
+              lyric.type === "title" && "text-3xl md:text-5xl font-bold",
+              lyric.type === "chorus" && "pl-5 md:pl-10 italic"
+            )}
+          >
+            {lyric.content}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }
