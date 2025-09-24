@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import llmModal from "@/lib/llm/llm";
 import { NextRequest } from "next/server";
 import * as z from "zod";
@@ -18,7 +19,6 @@ export const LyricsSectionSchema = z.object({
 
 export const LyricsSchema = z.array(LyricsSectionSchema);
 
-// Extended schema to include targetLanguage
 export const LyricsRequestSchema = z.object({
   lyrics: LyricsSchema,
   targetLanguage: z.string().min(1, "Target language is required"),
@@ -27,7 +27,6 @@ export const LyricsRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  // Step. Parse the body
   const parseBody = LyricsSchema.safeParse(body);
 
   if (!parseBody.success) {
@@ -36,10 +35,18 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const translated = await llmModal.translateLyrics(
-    parseBody.data,
-    body.targetLanguage
-  );
+  try {
+    const translated = await llmModal.translateLyrics(
+      parseBody.data,
+      body.targetLanguage
+    );
 
-  return new Response(translated, { status: 200 });
+    return new Response(translated, { status: 200 });
+  } catch (error: any) {
+    console.error("Translation fetch error:", error.message);
+
+    return new Response(error.message, {
+      status: 500,
+    });
+  }
 }

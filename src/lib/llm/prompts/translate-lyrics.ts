@@ -9,6 +9,7 @@ Mirror the structure of the input array and translate each "content" value to th
 - Output ONLY the JSON array.
 - Don't start with \`\`\`json or things like that because it will crash the app
 - The content property should not be empty. It should have the translate version of it's corresponding content field that was passed of the original lyrics
+- Translate the content to the exact specified targetLanguage. Don't translate it to any language you want. 
 
 Example input:
 [

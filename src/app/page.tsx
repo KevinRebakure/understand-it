@@ -1,10 +1,14 @@
 "use client";
 
 import FormModal from "@/_components/FormModal";
+import LyricsLoading from "@/_components/LyricsLoading";
 import NoLyrics from "@/_components/NoLyrics";
 import SearchForm from "@/_components/SearchForm";
+import { docs, rebakure } from "@/constants/constants";
 import { useLyricsVisibility } from "@/hooks/useLyricsVisibility";
 import { useLyricsStore } from "@/stores/lyricsStore";
+import { BookOpen, Globe } from "lucide-react";
+import Link from "next/link";
 import LyricsColumns from "../_components/LyricsColumns";
 
 export default function Home() {
@@ -16,12 +20,35 @@ export default function Home() {
     showTranslated,
   } = useLyricsVisibility();
 
-  const { originalLyrics, translatedLyrics } = useLyricsStore();
+  const {
+    originalLyrics,
+    translatedLyrics,
+    loadingOriginalLyrics,
+    loadingTranslatedLyrics,
+  } = useLyricsStore();
 
   return (
     <div className="p-8 md:p-16">
       <div className="flex justify-between">
-        <h1 className="text-2xl md:text-5xl mb-12">understand it.</h1>
+        <div className="mb-12 flex flex-col gap-1">
+          <h1 className="text-2xl md:text-5xl">understand it.</h1>
+          <Link
+            href={rebakure}
+            target="_blank"
+            className="flex items-center gap-2 underline"
+          >
+            <Globe />
+            rebakure.com
+          </Link>
+          <Link
+            href={docs}
+            target="_blank"
+            className="flex items-center gap-2 underline"
+          >
+            <BookOpen />
+            Docs
+          </Link>
+        </div>
         {!isDesktop && <FormModal />}
       </div>
 
@@ -49,14 +76,26 @@ export default function Home() {
           </div>
         )}
 
-        <div className="col-span-4 md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {originalLyrics && originalVisible && (
+        <div className="col-span-4 md:col-span-3 gap-8 grid grid-cols-1 md:grid-cols-2 items-start">
+          {!loadingOriginalLyrics && originalLyrics && (
             <LyricsColumns lyrics={originalLyrics} />
           )}
-          {translatedLyrics && translatedVisible && (
+          {!loadingTranslatedLyrics && translatedLyrics && (
             <LyricsColumns lyrics={translatedLyrics} />
           )}
-          {!originalLyrics && !translatedLyrics && <NoLyrics />}
+
+          {loadingOriginalLyrics && (
+            <LyricsLoading message="Fetching original lyrics" />
+          )}
+
+          {loadingTranslatedLyrics && (
+            <LyricsLoading message="Translating..." />
+          )}
+
+          {!originalLyrics &&
+            !translatedLyrics &&
+            !loadingOriginalLyrics &&
+            !loadingTranslatedLyrics && <NoLyrics />}
         </div>
       </div>
     </div>

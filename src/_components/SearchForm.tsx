@@ -6,6 +6,7 @@ import axios from "axios";
 import { Languages, Music, User } from "lucide-react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 import { Lyrics } from "./LyricsColumns";
 
 type Inputs = {
@@ -38,27 +39,30 @@ export default function SearchForm() {
 
   const { register, handleSubmit } = useForm<Inputs>({
     defaultValues: {
-      targetLanguage: "English",
+      targetLanguage: "",
+      artist: "",
+      title: "",
     },
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     lyricsMutation.mutate(data, {
       onSuccess: (data) => {
-        console.log("🚀");
-        console.log(data);
         setOriginalLyrics(data);
 
         translateMutation.mutate(data, {
           onSuccess: (data) => {
-            console.log("✅");
-            console.log(data);
             setTranslatedLyrics(data);
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error("Failed to translate lyrics!");
           },
         });
       },
       onError: (error) => {
-        console.log(error);
+        console.error(error);
+        toast.error("Failed to process original lyrics!");
       },
     });
   };
@@ -74,59 +78,63 @@ export default function SearchForm() {
   ]);
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-2 flex flex-col"
-      >
-        <label className="input w-full">
-          <Music size={24} />
-          <input
-            {...register("title", { required: true })}
-            type="text"
-            className="grow"
-            placeholder="Song name"
-          />
-        </label>
-        <label className="input w-full">
-          <User size={24} />
-          <input
-            {...register("artist", { required: true })}
-            type="text"
-            className="grow"
-            placeholder="Artist"
-          />
-        </label>
-        <label className="input w-full">
-          <Languages size={24} />
-          <input
-            {...register("targetLanguage", { required: true })}
-            type="text"
-            className="grow"
-            placeholder="Target language (e.g., English, Spanish)"
-          />
-        </label>
-        <button
-          disabled={lyricsMutation.isPending || translateMutation.isPending}
-          className="btn btn-active mt-3 rounded-full"
+    <>
+      <div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-2 flex flex-col"
         >
-          {lyricsMutation.isPending && (
-            <>
-              <span className="loading loading-ring loading-sm"></span>
-              <span>Formatting original lyrics ...</span>
-            </>
-          )}
-          {translateMutation.isPending && (
-            <>
-              <span className="loading loading-ring loading-sm"></span>
-              <span>Translating lyrics ...</span>
-            </>
-          )}
-          {!lyricsMutation.isPending &&
-            !translateMutation.isPending &&
-            "Search & Translate"}
-        </button>
-      </form>
-    </div>
+          <label className="input w-full">
+            <Music size={24} />
+            <input
+              {...register("title", { required: true })}
+              type="text"
+              className="grow"
+              placeholder="Song name"
+            />
+          </label>
+          <label className="input w-full">
+            <User size={24} />
+            <input
+              {...register("artist", { required: true })}
+              type="text"
+              className="grow"
+              placeholder="Artist"
+            />
+          </label>
+          <label className="input w-full">
+            <Languages size={24} />
+            <input
+              {...register("targetLanguage", { required: true })}
+              type="text"
+              className="grow"
+              placeholder="Target language (e.g., English, Spanish)"
+            />
+          </label>
+          <button
+            disabled={lyricsMutation.isPending || translateMutation.isPending}
+            className="btn btn-active mt-3 rounded-full"
+          >
+            {lyricsMutation.isPending && (
+              <>
+                <span className="loading loading-ring loading-sm"></span>
+                <span>Formatting original lyrics ...</span>
+              </>
+            )}
+            {translateMutation.isPending && (
+              <>
+                <span className="loading loading-ring loading-sm"></span>
+                <span>Translating lyrics ...</span>
+              </>
+            )}
+            {!lyricsMutation.isPending &&
+              !translateMutation.isPending &&
+              "Search & Translate"}
+          </button>
+        </form>
+      </div>
+
+      <Toaster />
+    </>
   );
 }
