@@ -120,8 +120,8 @@ export default function SearchForm() {
           <div role="alert" className="alert alert-warning">
             <CircleAlert />
             <span>
-              Write the title of the song and the name of the artist exactly as
-              it is, or otherwise it will fail.
+              Write the title of a very popular song and the name of the artist exactly as
+              it is, or otherwise it will fail. For other issues refer to the docs.
             </span>
           </div>
           <button
